@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -34,35 +35,31 @@ public class JpaConfigDs2 {
     @Bean(name = "jpaVendorAdapter2")
     public JpaVendorAdapter jpaVendorAdapter() {
         System.out.println("jpaVendorAdapter2 init");
-        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        EclipseLinkJpaVendorAdapter adapter = new EclipseLinkJpaVendorAdapter();
         adapter.setShowSql(true);
         adapter.setDatabase(Database.MYSQL);
-        adapter.setDatabasePlatform("org.hibernate.dialect.MySQLDialect");
+        adapter.setDatabasePlatform("org.eclipse.persistence.platform.database.MySQLPlatform");
         adapter.setGenerateDdl(true);
         return adapter;
     }
 
     @Bean(name = "entityManagerFactory2")
-    @DependsOn({"atomikosJtaPlatfom"})
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         System.out.println("entityManagerFactory2 init");
         LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
 
-
         entityManager.setJpaVendorAdapter(jpaVendorAdapter());
-        entityManager.setPackagesToScan("com.evan.jta.model.ds2");// entity package
+        // entity package
+        entityManager.setPackagesToScan("com.evan.jta.model.ds2");
         entityManager.setJtaDataSource(dataSource());
 
         Properties properties = new Properties();
-        properties.put("hibernate.transaction.jta.platform","com.evan.jta.config.AtomikosJtaPlatfom");
-
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        properties.put("hibernate.show_sql", "true");
-        properties.put("hibernate.format_sql", "true");
-        properties.put("hibernate.current_session_context_class", "jta");
-        properties.put("hibernate.transaction.factory_class", "org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory");
-
+        properties.put("eclipselink.weaving", "false");
+//        properties.put("eclipselink.logging.level", "FINE");
+//        properties.put("eclipselink.target-server", "com.atomikos.eclipselink.platform.AtomikosTransactionController");
+//        properties.put("eclipselink.external-transaction-controller", "true");
         entityManager.setJpaProperties(properties);
+        entityManager.setPersistenceUnitName("entityManagerFactory2_product");
         return entityManager;
 
     }

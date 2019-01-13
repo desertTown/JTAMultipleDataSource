@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -22,7 +23,6 @@ import java.util.Properties;
  */
 @Configuration
 @EnableTransactionManagement(proxyTargetClass = true)
-//指定数据源1的Repository路径，数据源1的entityManagerFactory，事务是公共事务
 @EnableJpaRepositories(basePackages = "com.evan.jta.repository.ds1", entityManagerFactoryRef = "entityManagerFactory", transactionManagerRef = "transactionManager")
 public class JpaConfigDs1 {
     @Bean(name = "dataSource", initMethod = "init", destroyMethod = "close")
@@ -35,15 +35,15 @@ public class JpaConfigDs1 {
     @Bean(name = "jpaVendorAdapter")
     public JpaVendorAdapter jpaVendorAdapter() {
         System.out.println("jpaVendorAdapter init");
-        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        EclipseLinkJpaVendorAdapter adapter = new EclipseLinkJpaVendorAdapter();
         adapter.setShowSql(true);
         adapter.setDatabase(Database.MYSQL);
-        adapter.setDatabasePlatform("org.hibernate.dialect.MySQLDialect");
+        adapter.setDatabasePlatform("org.eclipse.persistence.platform.database.MySQLPlatform");
         adapter.setGenerateDdl(true);
         return adapter;
     }
+
     @Bean(name = "entityManagerFactory")
-    @DependsOn({"atomikosJtaPlatfom"}) //需要先注册atomikosJtaPlatfom
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         System.out.println("entityManagerFactory init");
         LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
@@ -54,16 +54,12 @@ public class JpaConfigDs1 {
         entityManager.setJtaDataSource(dataSource());
 
         Properties properties = new Properties();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        properties.put("hibernate.show_sql", "true");
-        properties.put("hibernate.format_sql", "true");
-
-        //jta设置
-        properties.put("hibernate.current_session_context_class", "jta");
-        properties.put("hibernate.transaction.factory_class", "org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory");
-        //这里指定我们自己创建的AtomikosJtaPlatfom
-        properties.put("hibernate.transaction.jta.platform","com.evan.jta.config.AtomikosJtaPlatfom");
+        properties.put("eclipselink.weaving", "false");
+//        properties.put("eclipselink.logging.level", "FINE");
+//        properties.put("eclipselink.target-server", "com.atomikos.eclipselink.platform.AtomikosTransactionController");
+//        properties.put("eclipselink.external-transaction-controller", "true");
         entityManager.setJpaProperties(properties);
+        entityManager.setPersistenceUnitName("entityManagerFactory_user");
         return entityManager;
 
     }

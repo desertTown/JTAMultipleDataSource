@@ -42,19 +42,4 @@ public class MainConfig {
         jtaTransactionManager.setAllowCustomIsolationLevels(true);
         return jtaTransactionManager;
     }
-
-    //上面三个都认识，下面说一下这个bean
-    @Bean(name = "atomikosJtaPlatfom")
-    public AtomikosJtaPlatfom atomikosJtaPlatfom(){
-        AtomikosJtaPlatfom atomikosJtaPlatfom = new AtomikosJtaPlatfom();
-        try {
-            atomikosJtaPlatfom.setTm(atomikosTransactionManager());
-            atomikosJtaPlatfom.setUt(userTransaction());
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-
-        return atomikosJtaPlatfom;
-
-    }
 }
