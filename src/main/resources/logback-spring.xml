@@ -14,18 +14,12 @@
     <springProperty scope="context" name="logLevel" source="log.level"/>
     <springProperty scope="context" name="logPath" source="log.path"/>
     <springProperty scope="context" name="appName" source="log.appName"/>
-    <property name="LOG_HOME" value="D:\log\smartui"/>
+    <property name="LOG_HOME" value="D:\log\dev"/>
     <!-- 定义日志文件名称 -->
     <!--<property name="appName" value="etravel"></property>-->
     <!--logger：日志所处的包-->
     <!--level：日志打印级别-->
     <logger name="org.springframework" level="WARN"/>
-    <!--com.alibaba.dubbo是dubbo服务的包，在如何是info一下的级别会产生大量的启动日志，调成WARN减少日志输出-->
-    <!--com.ztev.audit.dao是本项目的dao层的包，把这个包的打印日志级别调成 DEBUG级别可以看到sql执行-->
-    <logger name="com.oocl.euc.dao.*" level="INFO"/>
-    <logger name="com.oocl.euc.service.*" level="DEBUG"/>
-    <logger name="com.oocl.euc.controller.*" level="DEBUG"/>
-    <logger name="com.oocl.euc.repository.*" level="DEBUG"/>
 
 
     <!--文件输出的格式设置 -->
