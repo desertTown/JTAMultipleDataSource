@@ -1,4 +1,4 @@
 # JTAMultipleDataSource
 
 #### informantion
-the project use by SpringBoot2.x +atomikos+SpringData+multipleDataSource
+the project base on SpringBoot2.x +atomikos+SpringData+multipleDataSource
