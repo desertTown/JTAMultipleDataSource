@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.print.attribute.standard.MediaSize;
+
 /**
  * @author EvanHuang
  * @date 1/10/2019 6:34 PM
@@ -21,12 +25,20 @@ public class JtaService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    @PersistenceContext(unitName = "entityManagerFactory2_product")
+    private EntityManager em;
+
     @Transactional
     public void jtaTesting() {
         User user = new User();
+        user.setAge(25);
+        user.setName("evan");
         userRepository.save(user);
 
         Product product = new Product();
+        product.setName("eclipseLink");
+        product.setPrice("10000");
         productRepository.save(product);
 //        int i = 1 / 0;
     }

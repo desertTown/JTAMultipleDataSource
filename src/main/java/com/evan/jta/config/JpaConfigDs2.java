@@ -55,9 +55,12 @@ public class JpaConfigDs2 {
 
         Properties properties = new Properties();
         properties.put("eclipselink.weaving", "false");
-//        properties.put("eclipselink.logging.level", "FINE");
-//        properties.put("eclipselink.target-server", "com.atomikos.eclipselink.platform.AtomikosTransactionController");
-//        properties.put("eclipselink.external-transaction-controller", "true");
+        properties.put("eclipselink.jdbc.cache-statements", "true");
+        properties.put("eclipselink.logging.level", "FINEST");
+        properties.put("eclipselink.allow-zero-id", "true");
+
+        properties.put("eclipselink.target-server", "com.evan.jta.config.AtomikosTransactionController");
+        properties.put("eclipselink.external-transaction-controller", "true");
         entityManager.setJpaProperties(properties);
         entityManager.setPersistenceUnitName("entityManagerFactory2_product");
         return entityManager;
